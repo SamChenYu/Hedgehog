@@ -33,7 +33,6 @@ let coins = []; // collectibles
 
     Grass top
 
-
 */
 
 let map = []; // using the tiles to generate the map
