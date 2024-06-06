@@ -49,8 +49,12 @@ function updateAnimation() {
     // Only update animation frame if the player is moving
     if (isPlayerMoving()) {
         currentFrame = (currentFrame + 1) % (totalFrames + 1); // +1 to include the reset frame
+    } else {
+        // Player is passive, set current frame to the last frame in passive animation
+        currentFrame = 1; // Set to the last frame (index 1) of sprites[0]
     }
 }
+
 
 function isPlayerMoving() {
     return (
@@ -102,11 +106,22 @@ function update() {
     }
 
     ctx.clearRect(0, 0, width, height);
+
     // Draw the sprite based on direction and current frame for passive animation
-    if (facingDirection === 'left') {
-        ctx.drawImage(leftSprites[1][currentFrame], playerX, playerY, 128, 128); // Adjust size as needed
+    if (isPlayerMoving()) {
+        // Player is moving, draw frames 0-3 from sprites[1] array
+        if (facingDirection === 'left') {
+            ctx.drawImage(leftSprites[1][currentFrame], playerX, playerY, 32, 32); // Adjust size as needed
+        } else {
+            ctx.drawImage(rightSprites[1][currentFrame], playerX, playerY, 32, 32); // Adjust size as needed
+        }
     } else {
-        ctx.drawImage(rightSprites[1][currentFrame], playerX, playerY, 128, 128); // Adjust size as needed
+        // Player is passive, draw frames 0-1 from sprites[0] array
+        if (facingDirection === 'left') {
+            ctx.drawImage(leftSprites[0][currentFrame], playerX, playerY, 32, 32); // Adjust size as needed
+        } else {
+            ctx.drawImage(rightSprites[0][currentFrame], playerX, playerY, 32, 32); // Adjust size as needed
+        }
     }
 }
 
