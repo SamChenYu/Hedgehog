@@ -1,8 +1,10 @@
 let canvas, ctx, width, height;
-let hedgehogImg;
+let hedgehogImg, slimeImg;
 let keysPressed = {};
 const animationSpeed = 8;
 
+
+// Constructor // main method
 window.onload = function() {
     canvas = document.getElementById('canvas');
     height = canvas.height;
@@ -11,15 +13,17 @@ window.onload = function() {
 
     ctx.imageSmoothingEnabled = false;
 
+    // loadPlayer.js
+
     hedgehogImg = new Image();
     hedgehogImg.onload = function() {
         splitSpritesheet(hedgehogImg, 4, 4, 32, 32).then(function(result) {
             splitSprites(result);
-            startGameLoop();
         }).catch(function(error) {
-            console.error('Error splitting spritesheet:', error);
+            console.error('Error splitting hedgehog spritesheet:', error);
         });
     };
+    
     hedgehogImg.src = 'hedgehog.png';
 
     document.addEventListener('keydown', (e) => {
@@ -29,8 +33,61 @@ window.onload = function() {
     document.addEventListener('keyup', (e) => {
         delete keysPressed[e.key];
     });
+
+
+    // loadEnemy.js
+    slimeImg = new Image();
+    slimeImg.onload = function() {
+        splitSpritesheet(slimeImg, 8, 5, 32, 32).then(function(result) {
+            slimeSprites = result;
+            startGameLoop();
+        }).catch(function(error) {
+            console.error('Error splitting hedgehog spritesheet:', error);
+        });
+    };
+    slimeImg.src = 'slime.png';
+
 }
 
+
+
+function splitSpritesheet(img, rows, cols, spriteWidth, spriteHeight) {
+    return new Promise((resolve, reject) => {
+        let spritesArray = [];
+        let tempCanvas = document.createElement('canvas');
+        let tempCtx = tempCanvas.getContext('2d');
+        tempCanvas.width = spriteWidth;
+        tempCanvas.height = spriteHeight;
+
+        for (let y = 0; y < rows; y++) {
+            spritesArray[y] = [];
+            for (let x = 0; x < cols; x++) {
+                tempCtx.clearRect(0, 0, spriteWidth, spriteHeight);
+                tempCtx.drawImage(img, x * spriteWidth, y * spriteHeight, spriteWidth, spriteHeight, 0, 0, spriteWidth, spriteHeight);
+                createImageBitmap(tempCanvas).then(function(bitmap) {
+                    spritesArray[y][x] = bitmap;
+                    if (y === rows - 1 && x === cols - 1) {
+                        resolve(spritesArray);
+                    }
+                }).catch(function(error) {
+                    reject(error);
+                });
+            }
+        }
+    });
+}
+
+
+
+
+
+
+
+
+
+
+
+// GAME LOOP
 function startGameLoop() {
     setInterval(update, 1000 / 60);
     setInterval(updateAnimation, 1000 / animationSpeed);
@@ -42,6 +99,8 @@ function updateAnimation() {
     } else {
         currentFrame = 1;
     }
+
+    currentSlimeFrame = (currentSlimeFrame + 1) % (walkFrames + 1);
 }
 
 function update() {
@@ -77,30 +136,9 @@ function update() {
             ctx.drawImage(rightSprites[0][currentFrame], playerX, playerY, 32, 32);
         }
     }
+
+    ctx.drawImage(slimeSprites[0][currentSlimeFrame], 0, 0, 32, 32);
+
+
 }
 
-function splitSpritesheet(img, rows, cols, spriteWidth, spriteHeight) {
-    return new Promise((resolve, reject) => {
-        let spritesArray = [];
-        let tempCanvas = document.createElement('canvas');
-        let tempCtx = tempCanvas.getContext('2d');
-        tempCanvas.width = spriteWidth;
-        tempCanvas.height = spriteHeight;
-
-        for (let y = 0; y < rows; y++) {
-            spritesArray[y] = [];
-            for (let x = 0; x < cols; x++) {
-                tempCtx.clearRect(0, 0, spriteWidth, spriteHeight);
-                tempCtx.drawImage(img, x * spriteWidth, y * spriteHeight, spriteWidth, spriteHeight, 0, 0, spriteWidth, spriteHeight);
-                createImageBitmap(tempCanvas).then(function(bitmap) {
-                    spritesArray[y][x] = bitmap;
-                    if (y === rows - 1 && x === cols - 1) {
-                        resolve(spritesArray);
-                    }
-                }).catch(function(error) {
-                    reject(error);
-                });
-            }
-        }
-    });
-}
