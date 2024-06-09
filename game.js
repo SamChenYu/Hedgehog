@@ -1,88 +1,3 @@
-let canvas, ctx, width, height;
-let hedgehogImg, slimeImg;
-let keysPressed = {};
-const animationSpeed = 8;
-
-
-// Constructor // main method
-window.onload = function() {
-    canvas = document.getElementById('canvas');
-    height = canvas.height;
-    width = canvas.width;
-    ctx = canvas.getContext('2d');
-
-    ctx.imageSmoothingEnabled = false;
-
-    // loadPlayer.js
-
-    hedgehogImg = new Image();
-    hedgehogImg.onload = function() {
-        splitSpritesheet(hedgehogImg, 4, 4, 32, 32).then(function(result) {
-            splitSprites(result);
-        }).catch(function(error) {
-            console.error('Error splitting hedgehog spritesheet:', error);
-        });
-    };
-    
-    hedgehogImg.src = 'hedgehog.png';
-
-    document.addEventListener('keydown', (e) => {
-        keysPressed[e.key] = true;
-    });
-
-    document.addEventListener('keyup', (e) => {
-        delete keysPressed[e.key];
-    });
-
-
-    // loadEnemy.js
-    slimeImg = new Image();
-    slimeImg.onload = function() {
-        splitSpritesheet(slimeImg, 8, 5, 32, 32).then(function(result) {
-            slimeSprites = result;
-            startGameLoop();
-        }).catch(function(error) {
-            console.error('Error splitting hedgehog spritesheet:', error);
-        });
-    };
-    slimeImg.src = 'slime.png';
-
-}
-
-
-
-function splitSpritesheet(img, rows, cols, spriteWidth, spriteHeight) {
-    return new Promise((resolve, reject) => {
-        let spritesArray = [];
-        let tempCanvas = document.createElement('canvas');
-        let tempCtx = tempCanvas.getContext('2d');
-        tempCanvas.width = spriteWidth;
-        tempCanvas.height = spriteHeight;
-
-        for (let y = 0; y < rows; y++) {
-            spritesArray[y] = [];
-            for (let x = 0; x < cols; x++) {
-                tempCtx.clearRect(0, 0, spriteWidth, spriteHeight);
-                tempCtx.drawImage(img, x * spriteWidth, y * spriteHeight, spriteWidth, spriteHeight, 0, 0, spriteWidth, spriteHeight);
-                createImageBitmap(tempCanvas).then(function(bitmap) {
-                    spritesArray[y][x] = bitmap;
-                    if (y === rows - 1 && x === cols - 1) {
-                        resolve(spritesArray);
-                    }
-                }).catch(function(error) {
-                    reject(error);
-                });
-            }
-        }
-    });
-}
-
-
-
-
-
-
-
 
 
 
@@ -104,6 +19,9 @@ function updateAnimation() {
 }
 
 function update() {
+
+    // player update
+
     const speed = 1;
 
     if ('ArrowUp' in keysPressed || 'w' in keysPressed) {
@@ -121,7 +39,22 @@ function update() {
         facingDirection = 'right';
     }
 
+    draw();
+}
+
+
+
+function draw() {
     ctx.clearRect(0, 0, width, height);
+
+    for(let row=0; row<map.length; row++) {
+        for(let col=0; col<map[row].length; col++) {
+            ctx.drawImage(tiles[0][0], row*16, col*16, 16, 16);
+        }
+    }
+
+
+
 
     if (isPlayerMoving(keysPressed)) {
         if (facingDirection === 'left') {
@@ -138,7 +71,4 @@ function update() {
     }
 
     ctx.drawImage(slimeSprites[0][currentSlimeFrame], 0, 0, 32, 32);
-
-
 }
-
