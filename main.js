@@ -1,7 +1,7 @@
 // basically contains all the main methods and global variables that are used in the game
 
 let canvas, ctx, width, height;
-let hedgehogImg, slimeImg, tileImg, treesImg, flowersImg, leavesImg;
+let hedgehogImg, slimeImg, tileImg, treesImg, flowersImg, leavesImg, coinsImg;
 let keysPressed = {};
 const animationSpeed = 8;
 
@@ -42,7 +42,7 @@ window.onload = function() {
 
 
 
-
+    /*
     // loadEnemy.js
     slimeImg = new Image();
     slimeImg.onload = function() {
@@ -53,8 +53,7 @@ window.onload = function() {
         });
     };
     slimeImg.src = 'assets/slime.png';
-
-
+    */
     // load the map assets
 
 
@@ -82,7 +81,6 @@ window.onload = function() {
     tileImg.onload = function() {
         splitSpritesheet(tileImg, 11, 7, 16, 16).then(function(result) {
             tiles = result;
-            startGameLoop();
         }).catch(function(error) {
             console.error('Error splitting tile spritesheet:', error);
         });
@@ -102,6 +100,18 @@ window.onload = function() {
         });
     };
     leavesImg.src = 'assets/LeafPink.png';
+
+
+    coinsImg = new Image();
+    coinsImg.onload = function() {
+        splitSpritesheet(coinsImg, 1, 4, 10, 10).then(function(result) {
+            coins = result;
+            startGameLoop();
+        }).catch(function(error) {
+            console.error('Error splitting coins spritesheet:', error);
+        });
+    };
+    coinsImg.src = 'assets/Coin2.png';
 
 
 }

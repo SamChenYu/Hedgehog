@@ -1,7 +1,4 @@
 
-
-
-
 // GAME LOOP
 function startGameLoop() {
     setInterval(update, 1000 / 60);
@@ -15,10 +12,14 @@ function updateAnimation() {
         currentFrame = 1;
     }
 
-    currentSlimeFrame = (currentSlimeFrame + 1) % (walkFrames + 1);
+    //currentSlimeFrame = (currentSlimeFrame + 1) % (walkFrames + 1);
 
     for(let i=0; i<leavesMap.length; i++) {
         leavesMap[i][2] = (leavesMap[i][2] + 1) % 6;
+    }
+
+    for(let i=0; i<coinsMap.length; i++) {
+        coinsMap[i][2] = (coinsMap[i][2] + 1) % 4;
     }
 }
 
@@ -118,7 +119,7 @@ function draw() {
         
     }
 
-    ctx.drawImage(slimeSprites[0][currentSlimeFrame], 0, 0, 32, 32);
+    //ctx.drawImage(slimeSprites[0][currentSlimeFrame], 0, 0, 32, 32);
 
 
     for(let i=0; i<leavesMap.length; i++) {
@@ -130,6 +131,13 @@ function draw() {
         
 
     }
-    //ctx.drawImage(leaves, 0, 0, 12, 7);
+
+    for(let i=0; i<coinsMap.length; i++) {
+            
+        let x = coinsMap[i][0];
+        let y = coinsMap[i][1];
+        let indexX = coinsMap[i][2];
+        ctx.drawImage(coins[0][indexX], x+4, y+4, 8, 8);
+    }
 
 }

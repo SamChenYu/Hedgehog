@@ -3,7 +3,7 @@ let trees = []; // trees decoration
 let flowers = []; // flowers decoration
 
 let leaves = []; // particle effects
-
+let coins = []; // collectibles
 /*
 
     CIRCLE TILES
@@ -40,6 +40,7 @@ let map = []; // using the tiles to generate the map
 let treesMap = [];
 let flowersMap = [];
 let leavesMap = [];
+let coinsMap = [];
 var area = 0;
 
 
@@ -122,6 +123,12 @@ function generatePaths(playerX, playerY) {
         map[row + x][col + y][0] = 4;
         map[row + x][col + y][1] = dirtTile();
         pathsCreated++;
+
+        // very small chance that a coin is placed here
+        if(Math.random() > 0.9) {
+            coinsMap.push([row*16, col*16, 0, 0, 0]); // x, y, indexX, collected
+        }
+
         carvePath(row + x, col + y,depth++);
         return;
     }
