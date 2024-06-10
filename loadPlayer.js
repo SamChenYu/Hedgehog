@@ -33,6 +33,11 @@ function mirrorSprite(sprite) {
     return tempCanvas;
 }
 
+function randomizePlayerPosition (width, height) {
+    playerX = Math.floor(Math.random() * width/2);
+    playerY = Math.floor(Math.random() * height/2);
+}
+
 window.playerX = playerX;
 window.playerY = playerY;
 window.leftSprites = leftSprites;

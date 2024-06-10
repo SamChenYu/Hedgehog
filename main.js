@@ -26,6 +26,7 @@ window.onload = function() {
     };
     
     hedgehogImg.src = 'assets/hedgehog.png';
+    randomizePlayerPosition(width, height);
 
     document.addEventListener('keydown', (e) => {
         keysPressed[e.key] = true;
@@ -65,10 +66,8 @@ window.onload = function() {
         });
     };
     tileImg.src= 'assets/TilesetFloor.png';
-
-    
-
-    generateMap();
+    generateMap(width, height);
+    generatePaths(Math.ceil(playerX/16), Math.ceil(playerY/16));
 }
 
 

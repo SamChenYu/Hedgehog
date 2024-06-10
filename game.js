@@ -49,7 +49,9 @@ function draw() {
 
     for(let row=0; row<map.length; row++) {
         for(let col=0; col<map[row].length; col++) {
-            ctx.drawImage(tiles[0][0], row*16, col*16, 16, 16);
+            let indexX = map[row][col][0];
+            let indexY = map[row][col][1];
+            ctx.drawImage(tiles[indexX][indexY], row*16, col*16, 16, 16);
         }
     }
 
