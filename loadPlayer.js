@@ -34,8 +34,8 @@ function mirrorSprite(sprite) {
 }
 
 function randomizePlayerPosition (width, height) {
-    playerX = Math.floor(Math.random() * width/2);
-    playerY = Math.floor(Math.random() * height/2);
+    playerX = Math.floor(Math.random() * width/2)+16;
+    playerY = Math.floor(Math.random() * height/2)+16;
 }
 
 window.playerX = playerX;

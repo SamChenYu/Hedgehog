@@ -1,7 +1,7 @@
 // basically contains all the main methods and global variables that are used in the game
 
 let canvas, ctx, width, height;
-let hedgehogImg, slimeImg, tileImg;
+let hedgehogImg, slimeImg, tileImg, treesImg, flowersImg, leavesImg;
 let keysPressed = {};
 const animationSpeed = 8;
 
@@ -48,7 +48,6 @@ window.onload = function() {
     slimeImg.onload = function() {
         splitSpritesheet(slimeImg, 8, 5, 32, 32).then(function(result) {
             slimeSprites = result;
-            startGameLoop();
         }).catch(function(error) {
             console.error('Error splitting slime spritesheet:', error);
         });
@@ -56,11 +55,34 @@ window.onload = function() {
     slimeImg.src = 'assets/slime.png';
 
 
+    // load the map assets
+
+
+    treesImg = new Image();
+    treesImg.onload = function() {
+        splitSpritesheet(treesImg, 1, 10, 32, 32).then(function(result) {
+            trees = result;
+        }).catch(function(error) {
+            console.error('Error splitting tree spritesheet:', error);
+        });
+    }
+    treesImg.src = 'assets/Trees.png';
+
+    flowersImg = new Image();
+    flowersImg.onload = function() {
+        splitSpritesheet(flowersImg, 2, 10, 16, 16).then(function(result) {
+            flowers = result;
+        }).catch(function(error) {
+            console.error('Error splitting flower spritesheet:', error);
+        });
+    }
+    flowersImg.src = 'assets/Flowers.png';
 
     tileImg = new Image();
     tileImg.onload = function() {
         splitSpritesheet(tileImg, 11, 7, 16, 16).then(function(result) {
             tiles = result;
+            startGameLoop();
         }).catch(function(error) {
             console.error('Error splitting tile spritesheet:', error);
         });
@@ -68,6 +90,20 @@ window.onload = function() {
     tileImg.src= 'assets/TilesetFloor.png';
     generateMap(width, height);
     generatePaths(Math.ceil(playerX/16), Math.ceil(playerY/16));
+
+
+
+    leavesImg = new Image();
+    leavesImg.onload = function() {
+        splitSpritesheet(leavesImg, 1, 6, 12, 7).then(function(result) {
+            leaves = result;
+        }).catch(function(error) {
+            console.error('Error splitting leaves spritesheet:', error);
+        });
+    };
+    leavesImg.src = 'assets/LeafPink.png';
+
+
 }
 
 
