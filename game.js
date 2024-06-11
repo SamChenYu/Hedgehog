@@ -6,6 +6,7 @@ function startGameLoop() {
 }
 
 function updateAnimation() {
+    // update the sprite animations
     if (isPlayerMoving(keysPressed)) {
         currentFrame = (currentFrame + 1) % (totalFrames + 1);
     } else {
@@ -26,24 +27,57 @@ function updateAnimation() {
 function update() {
 
     // player update
+    updatePlayerHitbox();
+    // detect collision with coins
+    for(let i=0; i<coinsMap.length; i++) {
+        let coinX = coinsMap[i][0];
+        let coinY = coinsMap[i][1];
+        let coinHitbox = new Rectangle(coinX+4, coinY+4, 8, 8);
+        if(playerHitbox.intersects(coinHitbox)) {
+            coinsMap.splice(i, 1);
+            coinsCount++;
+            playCoin();
+        }
+    }
 
     const speed = 1;
 
     if ('ArrowUp' in keysPressed || 'w' in keysPressed) {
-        playerY -= speed;
+        if (isOnDirtTile(0,  - speed)) {
+            playerY -= speed;
+        }
     } 
     if ('ArrowDown' in keysPressed || 's' in keysPressed) {
-        playerY += speed;
+        if (isOnDirtTile(0, speed)) {
+            playerY += speed;
+        }
     } 
     if ('ArrowLeft' in keysPressed || 'a' in keysPressed) {
-        playerX -= speed;
-        facingDirection = 'left';
+        if (isOnDirtTile(- speed, 0)) {
+            playerX -= speed;
+            facingDirection = 'left';
+        }
     } 
     if ('ArrowRight' in keysPressed || 'd' in keysPressed) {
-        playerX += speed;
-        facingDirection = 'right';
+        if (isOnDirtTile(speed, 0)) {
+            playerX += speed;
+            facingDirection = 'right';
+        }
     }
 
+    // checks if the player's movements is on a dirt tile
+    function isOnDirtTile(x, y) {
+        for(let i=0; i<grassHitbox.length; i++) {
+            for(let j=0; j<grassHitbox[i].length; j++) {
+                if(grassHitbox[i][j].intersects(playerHitbox.move(x, y))) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    // update random leaf falling movements
     for(let i=0; i<leavesMap.length; i++) {
         if(Math.random() > 0.9) {
             leavesMap[i][0] -= 1;
@@ -65,14 +99,15 @@ function update() {
     }
 
 
-    if(playerX < 0) {
+    // player moves to the next 'room' and terrain is generated again
+    if(playerX < -10) {
         resetMap();
-        playerX = width;
+        playerX = width-20;
         generateMap(width, height);
         generatePaths(Math.ceil(playerX/16), Math.ceil(playerY/16));
     } else if(playerX > width) {
         resetMap();
-        playerX = 0;
+        playerX = -5;
         generateMap(width, height);
         generatePaths(Math.ceil(playerX/16), Math.ceil(playerY/16));
     }
@@ -94,7 +129,7 @@ function update() {
 
 function draw() {
     ctx.clearRect(0, 0, width, height);
-
+    // draw the map
     for(let row=0; row<map.length; row++) {
         for(let col=0; col<map[row].length; col++) {
             let indexX = map[row][col][0];
@@ -104,20 +139,18 @@ function draw() {
     }  
 
 
-    
-
-
+    // draw player 
     if (isPlayerMoving(keysPressed)) {
         if (facingDirection === 'left') {
-            ctx.drawImage(leftSprites[1][currentFrame], playerX, playerY, 30, 30);
+            ctx.drawImage(leftSprites[1][currentFrame], playerX, playerY, playerSize, playerSize);
         } else {
-            ctx.drawImage(rightSprites[1][currentFrame], playerX, playerY, 30, 30);
+            ctx.drawImage(rightSprites[1][currentFrame], playerX, playerY, playerSize, playerSize);
         }
     } else {
         if (facingDirection === 'left') {
-            ctx.drawImage(leftSprites[0][currentFrame], playerX, playerY, 30, 30);
+            ctx.drawImage(leftSprites[0][currentFrame], playerX, playerY, playerSize, playerSize);
         } else {
-            ctx.drawImage(rightSprites[0][currentFrame], playerX, playerY, 30, 30);
+            ctx.drawImage(rightSprites[0][currentFrame], playerX, playerY, playerSize, playerSize);
         }
     }
 
@@ -166,5 +199,29 @@ function draw() {
     // the UI box for coins counter
     ctx.drawImage(uiBoxImg, 5, 0, 40, 20);
     ctx.drawImage(coins[0][0], 10, 7, 9, 9);
-    ctx.fillText(' x '+coinsCount, 27, 12);
+    ctx.fillText(' x'+coinsCount, 30, 12);
+
+
+    
+    /* DRAW THE HITBOXES FOR DEBUGGING 
+    playerHitbox.drawRect(ctx);
+
+    for(let i=0; i<grassHitbox.length; i++) {
+        for(let j=0; j<grassHitbox[i].length; j++) {
+            grassHitbox[i][j].drawRect(ctx);
+        }
+    }
+
+    for(let i=0; i<coinsMap.length; i++) {
+        let coinX = coinsMap[i][0];
+        let coinY = coinsMap[i][1];
+        let coinHitbox = new Rectangle(coinX+4, coinY+4, 8, 8);
+        coinHitbox.drawRect(ctx);
+    }
+        */
+    
+
+    
+    
 }
+

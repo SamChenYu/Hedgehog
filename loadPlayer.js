@@ -1,5 +1,7 @@
 let playerX = 0;
 let playerY = 0;
+let playerSize = 30;
+let playerHitbox = new Rectangle (0,0, playerSize/3, playerSize/4);
 let leftSprites = [];
 let rightSprites = [];
 let facingDirection = 'right';
@@ -37,6 +39,11 @@ function mirrorSprite(sprite) {
 function randomizePlayerPosition (width, height) {
     playerX = Math.floor(Math.random() * width/2)+16;
     playerY = Math.floor(Math.random() * height/2)+16;
+}
+
+function updatePlayerHitbox() {
+    playerHitbox.x = playerX + playerSize/2.7;
+    playerHitbox.y = playerY + playerSize/1.3;
 }
 
 window.playerX = playerX;

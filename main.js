@@ -1,4 +1,5 @@
 // basically contains all the main methods and global variables that are used in the game
+// handles initialization of the game and loading of assets
 
 let canvas, ctx, width, height;
 let hedgehogImg, slimeImg, tileImg, treesImg, flowersImg, leavesImg, coinsImg;
@@ -42,6 +43,7 @@ window.onload = function() {
     document.addEventListener('keydown', playMusic);
     document.addEventListener('mousemove', playMusic);
     document.addEventListener('touchstart', playMusic);
+
 
 
 
@@ -180,3 +182,11 @@ function splitSpritesheet(img, rows, cols, spriteWidth, spriteHeight) {
     });
 }
 
+
+    // Function to play the coin sound
+    function playCoin() {
+        var coin = document.getElementById('coin');
+        coin.play().catch(error => {
+            console.error('Failed to play coin sound:', error);
+        });
+    }

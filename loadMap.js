@@ -41,6 +41,7 @@ let treesMap = [];
 let flowersMap = [];
 let leavesMap = [];
 let coinsMap = [];
+let grassHitbox = []; // this creates rectangles for the grass tiles to block the player
 
 
 // Randomly generate a map
@@ -54,11 +55,13 @@ function generateMap(width, height) {
 
     for (let row = 0; row < mapWidth; row++) {
         map.push([]); // Push an empty array to the map for each row
+        grassHitbox.push([]); // Push an empty array to the grassHitbox for each row
         for (let col = 0; col < mapHeight; col++) {
+            grassHitbox[row].push(new Rectangle(row * 16, col * 16, 16, 16)); // Create a rectangle for each grass tile
             var firstIndex = Math.floor(Math.random() * 2) + 4;
             var secondIndex;
 
-            // GENERATE ONLY GRASS TILES
+            // GENERATE ONLY GRASS TILES THEN DIRT PATH WILL BE GENERATED LATER
             if(firstIndex == 4 ) {
                 secondIndex = Math.floor(Math.random() * 2) + 2;
             } else {
@@ -110,6 +113,7 @@ function generatePaths(playerX, playerY) {
         // set the current tile to dirt
         map[row][col][0] = 4;
         map[row][col][1] = dirtTile();
+        grassHitbox[row][col] = new Rectangle(0, 0, 0, 0); // remove the grass hitbox
 
         // randomize the direction
         var direction = Math.floor(Math.random() * moves.length);
@@ -123,11 +127,12 @@ function generatePaths(playerX, playerY) {
         // set the next tile to dirt
         map[row + x][col + y][0] = 4;
         map[row + x][col + y][1] = dirtTile();
+        grassHitbox[row+x][col+y] = new Rectangle(0, 0, 0, 0); // remove the grass hitbox
         pathsCreated++;
 
         // very small chance that a coin is placed here
         if(Math.random() > 0.9) {
-            coinsMap.push([row*16, col*16, 0, 0, 0]); // x, y, indexX, collected
+            coinsMap.push([row*16, col*16, 0, 0, 0]); // x, y, indexX, collected (unused for now)
         }
 
         carvePath(row + x, col + y,depth++);
@@ -140,6 +145,7 @@ function generatePaths(playerX, playerY) {
         if(isValidMove(row, col, x, y)) {
             map[row + x][col + y][0] = 4;
             map[row + x][col + y][1] = dirtTile();
+            grassHitbox[row+x][col+y] = new Rectangle(0, 0, 0, 0); // remove the grass hitbox
             pathsCreated++;
         }
     }
@@ -168,6 +174,7 @@ function generatePaths(playerX, playerY) {
         for(let i = playerX; i < otherSideX; i++) {
             map[i][playerY][0] = 4;
             map[i][playerY][1] = dirtTile();
+            grassHitbox[i][playerY] = new Rectangle(0, 0, 0, 0); // remove the grass hitbox
         }
     }
 
@@ -225,6 +232,7 @@ function resetMap() {
     treesMap = [];
     flowersMap = [];
     coinsMap = [];
+    grassHitbox = [];
 }
 
 
