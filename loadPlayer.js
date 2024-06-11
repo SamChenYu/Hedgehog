@@ -5,6 +5,7 @@ let rightSprites = [];
 let facingDirection = 'right';
 let currentFrame = 0;
 const totalFrames = 3;
+let coinsCount = 0;
 
 function isPlayerMoving(keysPressed) {
     return (

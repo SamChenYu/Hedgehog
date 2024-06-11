@@ -64,6 +64,29 @@ function update() {
         }
     }
 
+
+    if(playerX < 0) {
+        resetMap();
+        playerX = width;
+        generateMap(width, height);
+        generatePaths(Math.ceil(playerX/16), Math.ceil(playerY/16));
+    } else if(playerX > width) {
+        resetMap();
+        playerX = 0;
+        generateMap(width, height);
+        generatePaths(Math.ceil(playerX/16), Math.ceil(playerY/16));
+    }
+    if(playerY < -30) {
+        resetMap();
+        playerY = 120
+        generateMap(width, height);
+        generatePaths(Math.ceil(playerX/16), Math.ceil(playerY/16));
+    } else if( playerY > height-20 ) {
+        resetMap();
+        playerY = 0;
+        generateMap(width, height);
+        generatePaths(Math.ceil(playerX/16), Math.ceil(playerY/16));
+    }
     draw();
 }
 
@@ -138,6 +161,10 @@ function draw() {
         let y = coinsMap[i][1];
         let indexX = coinsMap[i][2];
         ctx.drawImage(coins[0][indexX], x+4, y+4, 8, 8);
-    }
+    }   
 
+    // the UI box for coins counter
+    ctx.drawImage(uiBoxImg, 5, 0, 40, 20);
+    ctx.drawImage(coins[0][0], 10, 7, 9, 9);
+    ctx.fillText(' x '+coinsCount, 27, 12);
 }

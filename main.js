@@ -2,6 +2,7 @@
 
 let canvas, ctx, width, height;
 let hedgehogImg, slimeImg, tileImg, treesImg, flowersImg, leavesImg, coinsImg;
+let uiBoxImg;
 let keysPressed = {};
 const animationSpeed = 8;
 
@@ -12,8 +13,39 @@ window.onload = function() {
     height = canvas.height;
     width = canvas.width;
     ctx = canvas.getContext('2d');
-
     ctx.imageSmoothingEnabled = false;
+    // font settings for the UI box
+    ctx.font = '12px "Press Start 2P"';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+
+
+
+
+    // play the music
+    var music = document.getElementById('music');
+    
+    function playMusic() {
+        music.play().catch(error => {
+            console.error('Failed to play music:', error);
+        });
+
+    }
+    // Function to pause music
+    function pauseMusic() {
+        music.pause();
+    }
+    // this is complicated because google chrome doesn't allow autoplay
+    // so we need to add an event listener to play the music for any user interaction
+    // before any music is allowed to play
+    document.addEventListener('click', playMusic);
+    document.addEventListener('keydown', playMusic);
+    document.addEventListener('mousemove', playMusic);
+    document.addEventListener('touchstart', playMusic);
+
+
+
+
 
     // loadPlayer.js
     hedgehogImg = new Image();
@@ -112,6 +144,9 @@ window.onload = function() {
         });
     };
     coinsImg.src = 'assets/Coin2.png';
+
+    uiBoxImg = new Image();
+    uiBoxImg.src = 'assets/DialogBox.png';
 
 
 }

@@ -41,7 +41,6 @@ let treesMap = [];
 let flowersMap = [];
 let leavesMap = [];
 let coinsMap = [];
-var area = 0;
 
 
 // Randomly generate a map
@@ -51,7 +50,6 @@ var area = 0;
 function generateMap(width, height) {
     var mapWidth = Math.ceil(width / 16);
     var mapHeight = Math.ceil(height / 16);
-    area = width*height;
 
 
     for (let row = 0; row < mapWidth; row++) {
@@ -106,6 +104,9 @@ function generatePaths(playerX, playerY) {
             return;
         }
         
+        if(!isValidMove(row,col,0, 0)) {
+            return;
+        }
         // set the current tile to dirt
         map[row][col][0] = 4;
         map[row][col][1] = dirtTile();
@@ -133,26 +134,24 @@ function generatePaths(playerX, playerY) {
         return;
     }
 
+
     // ensure the player is initially surrounded by the path
-    map[playerX][playerY][0] = 4;
-    map[playerX][playerY][1] = dirtTile();
-    map[playerX-1][playerY][0] = 4;
-    map[playerX-1][playerY][1] = dirtTile();
-    map[playerX+1][playerY][0] = 4;
-    map[playerX+1][playerY][1] = dirtTile();
-    map[playerX][playerY-1][0] = 4;
-    map[playerX][playerY-1][1] = dirtTile();
-    map[playerX][playerY+1][0] = 4;
-    map[playerX][playerY+1][1] = dirtTile();
-    map[playerX-1][playerY-1][0] = 4;
-    map[playerX-1][playerY-1][1] = dirtTile();
-    map[playerX+1][playerY-1][0] = 4;
-    map[playerX+1][playerY-1][1] = dirtTile();
-    map[playerX-1][playerY+1][0] = 4;
-    map[playerX-1][playerY+1][1] = dirtTile();
-    map[playerX-1][playerY+1][1] = dirtTile();
-    map[playerX+1][playerY+1][0] = 4;
-    map[playerX+1][playerY+1][1] = dirtTile();
+    function setDirtTile(row, col, x, y) {
+        if(isValidMove(row, col, x, y)) {
+            map[row + x][col + y][0] = 4;
+            map[row + x][col + y][1] = dirtTile();
+            pathsCreated++;
+        }
+    }
+    setDirtTile(playerX, playerY, 0, 0);
+    setDirtTile(playerX, playerY, 0, 1);
+    setDirtTile(playerX, playerY, 1, 0);
+    setDirtTile(playerX, playerY, 0, -1);
+    setDirtTile(playerX, playerY, -1, 0);
+    setDirtTile(playerX, playerY, 1, 1);
+    setDirtTile(playerX, playerY, -1, 1);
+    setDirtTile(playerX, playerY, 1, -1);
+    setDirtTile(playerX, playerY, -1, -1);
     pathsCreated += 9;
 
 
@@ -174,7 +173,7 @@ function generatePaths(playerX, playerY) {
 
     function getTreeIndex() {
         const values = [0, 1, 2, 3, 7, 8, 9];
-        const weights = [1, 1, 1, 1, 0.3, 1, 1]; // Adjust the weight for 7 to make it very rare
+        const weights = [1, 1, 0.4, 1, 0.3, 1, 1]; // dead tree and pink tree are rarer than the other normal trees
     
         // Compute the cumulative weights
         const cumulativeWeights = [];
@@ -211,14 +210,21 @@ function generatePaths(playerX, playerY) {
     }
     
     // push five leaves to fall in the background
+    leavesMap = [];
     for(let i=0; i<5; i++) {
         leavesMap.push([Math.floor(Math.random() * width), Math.floor(Math.random() * height), Math.floor(Math.random()*5)]);
     }
-    
 
 
 
+}
 
+
+function resetMap() {
+    map = [];
+    treesMap = [];
+    flowersMap = [];
+    coinsMap = [];
 }
 
 
