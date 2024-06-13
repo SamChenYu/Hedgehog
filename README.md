@@ -1,4 +1,4 @@
-# Hedgehog
+# Hedgehog - with infinite terrain generation
 
 Controls: WASD / Arrow Keys
   
